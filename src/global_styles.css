@@ -8,6 +8,24 @@
   --sidebar-width-expanded: 240px;
   --sidebar-width-collapsed: 72px;
 }
+::-webkit-scrollbar {
+  width: 8px; /* أو height لو أفقي */
+}
+/* الجزء الخلفي (track) */
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.996);
+}
+
+/* الجزء المتحرك (thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(167, 165, 165, 0.92); /* لون غامق شفاف */
+  border-radius: 10px;
+}
+
+/* عند الـ hover عليه */
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(245, 242, 242);
+}
 
 html {
   scroll-behavior: smooth;
