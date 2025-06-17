@@ -134,16 +134,6 @@
       </button>
     </div>
 
-    <!-- Pagination Info -->
-    <div
-      class="text-center mt-4 text-gray-600 dark:text-gray-300"
-      *ngIf="getTotalPages() > 1"
-    >
-      Showing {{ (currentPage - 1) * projectsPerPage + 1 }} -
-      {{
-        Math.min(currentPage * projectsPerPage, getFilteredProjects().length)
-      }}
-      of {{ getFilteredProjects().length }} projects
-    </div>
+    
   </div>
 </section>
