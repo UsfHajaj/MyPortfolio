@@ -1,0 +1,73 @@
+<section id="hero" class="section flex items-center">
+  <div class="w-full max-w-4xl mx-auto">
+    <div class="code-card">
+      <div class="code-card-content">
+        <div class="code-line">
+          <span class="dark:text-gray-400 text-gray-500">// Hello, world!</span>
+        </div>
+        <div class="code-line mt-4">
+          <span class="text-primary-400">const</span>
+          <span class="dark:text-white text-gray-700 ml-2">developer </span>
+          <span class="text-primary-500">=</span>
+          <span class="dark:text-white text-gray-700"> {{ "{" }}</span>
+        </div>
+        <div class="code-line pl-8">
+          <span class="text-primary-300">name:</span>
+          <span class="text-accent-400"> 'Yousif Ibrahim'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+        </div>
+        <div class="code-line pl-8">
+          <span class="text-primary-300">title:</span>
+          <span class="text-accent-400"> {{ displayedTitle }}</span
+          ><span class="dark:text-white text-gray-700">,</span>
+        </div>
+        <div class="code-line pl-8">
+          <span class="text-primary-300">skills:</span>
+          <span class="dark:text-white text-gray-700"> [</span>
+          <span class="text-accent-400">'ASP.NET Core'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+          <span class="text-accent-400">'C#'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+          <span class="text-accent-400">'Angular'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+          <span class="text-accent-400"> 'TypeScript'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+          <span class="text-accent-400"> 'Python'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+          <span class="text-accent-400"> 'AI'</span
+          ><span class="dark:text-white text-gray-700">,</span>
+          <span class="text-accent-400"> 'NLP'</span>
+          <span class="dark:text-white text-gray-700">],</span>
+        </div>
+        <div class="code-line pl-8">
+          <span class="text-primary-300">available:</span>
+          <span class="dark:text-green-400 text-green-500"> true</span>
+        </div>
+        <div class="code-line">
+          <span class="dark:text-white text-gray-700">{{ "}" }};</span>
+        </div>
+        <div class="code-line mt-4">
+          <span class="dark:text-gray-400 text-gray-500"
+            >// Let's connect!</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+      <button
+        (click)="scrollToContact()"
+        class="px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary-300"
+      >
+        Contact Me
+      </button>
+      <button
+        (click)="downloadCV()"
+        class="px-6 py-3 bg-dark-700 text-white rounded-lg hover:bg-dark-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-dark-500 flex items-center justify-center"
+      >
+        <i class="fas fa-download px-2"></i>
+        Download CV
+      </button>
+    </div>
+  </div>
+</section>

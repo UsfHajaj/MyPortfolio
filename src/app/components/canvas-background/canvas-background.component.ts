@@ -5,17 +5,8 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-canvas-background',
   standalone: true,
-  template: `<canvas #canvasElement></canvas>`,
-  styles: [`
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -10;
-    }
-  `]
+  templateUrl: "./canvas-background.component.html",
+  styleUrl: "./canvas-background.component.css",
 })
 export class CanvasBackgroundComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('canvasElement', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;

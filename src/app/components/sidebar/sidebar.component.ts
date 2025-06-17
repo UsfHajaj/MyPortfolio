@@ -7,84 +7,8 @@ import { ScrollService } from '../../services/scroll.service';
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, ThemeToggleComponent],
-  template: `
-    <aside 
-      class="fixed top-0 left-0 h-screen transition-width duration-300 ease-in-out bg-white bg-opacity-30
-       dark:bg-dark-900 dark:bg-opacity-30  text-dark-800
-        dark:text-white z-50 shadow-md "
-      [class.sidebar-expanded]="expanded"
-      [class.sidebar-collapsed]="!expanded"
-    >
-      <div class="flex flex-col h-full">
-        <!-- Toggle button -->
-        <button 
-          (click)="toggleSidebar()" 
-          class="w-full py-4 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-dark-700 transition-colors duration-200"
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            class="h-6 w-6 transition-transform duration-300" 
-            [class.rotate-180]="!expanded"
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-          </svg>
-          <span *ngIf="expanded" class="ml-2 transition-opacity duration-300">Menu</span>
-        </button>
-        
-        <div class="flex-1 overflow-y-auto py-4">
-          <nav class="px-4">
-            <ul class="space-y-4">
-              <li *ngFor="let item of navItems" class="text-center">
-                <a 
-                  (click)="navigateTo(item.id)" 
-                  class="flex items-center py-3 px-2 rounded-lg cursor-pointer transition-all duration-200 "
-                  [class.bg-neutral-900]="activeSection === item.id"
-                  [class.text-white]="activeSection === item.id"
-                  [class.hover:bg-gray-100]="activeSection !== item.id"
-                  [class.dark:hover:bg-dark-700]="activeSection !== item.id"
-                >
-                  <div [innerHTML]="item.icon" class="w-6 h-6"></div>
-                  <span
-                    *ngIf="expanded"
-                    class="ml-3 whitespace-nowrap transition-opacity duration-300"
-                  >{{ item.label }}</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        
-        <div class="p-4 flex flex-col items-center justify-center gap-5">
-          <app-theme-toggle></app-theme-toggle>
-          <a 
-            *ngIf="expanded" 
-            href="assets/cv.pdf" 
-            download 
-            class="ml-4 flex items-center text-primary-500 hover:text-primary-600 transition"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            <span>Download CV</span>
-          </a>
-          <a 
-            *ngIf="!expanded" 
-            href="assets/cv.pdf" 
-            download 
-            class=" text-primary-500 hover:text-primary-600 transition"
-            title="Download CV"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </aside>
-  `
+  templateUrl: "./sidebar.component.html",
+  styleUrls: ["./sidebar.component.css"],
 })
 export class SidebarComponent implements OnInit {
   expanded: boolean = false;

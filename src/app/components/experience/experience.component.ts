@@ -13,31 +13,7 @@ interface Experience {
   selector: 'app-experience',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <section id="experience" class="section">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="section-title">Experience</h2>
-        
-        <div class="timeline-container mt-12">
-          <div *ngFor="let exp of experiences" class="timeline-item">
-            <div class="bg-white dark:bg-dark-700 p-6 rounded-lg shadow-md ml-8">
-              <h3 class="text-xl font-bold text-primary-500">{{ exp.title }}</h3>
-              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-1 mb-4">
-                <span class="font-medium">{{ exp.company }}</span>
-                <span class="text-sm text-gray-600 dark:text-gray-300">{{ exp.period }}</span>
-              </div>
-              
-              <p class="mb-4">{{ exp.description }}</p>
-              
-              <ul class="list-disc pl-5 space-y-1">
-                <li *ngFor="let achievement of exp.achievements">{{ achievement }}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  `
+  templateUrl: "./experience.component.html",
 })
 export class ExperienceComponent {
   experiences: Experience[] = [

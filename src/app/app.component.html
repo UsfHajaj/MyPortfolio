@@ -1,0 +1,25 @@
+<app-loading-spinner *ngIf="isLoading | async"></app-loading-spinner>
+<app-canvas-background [isDarkTheme]="isDarkTheme()"></app-canvas-background>
+
+<div class="relative min-h-screen">
+  <app-sidebar (sidebarToggled)="sidebarExpanded = $event"></app-sidebar>
+
+  <main
+    class="transition-all duration-300"
+    [class.main-content-expanded]="sidebarExpanded"
+    [class.main-content-collapsed]="!sidebarExpanded"
+  >
+    <app-hero></app-hero>
+    <app-about></app-about>
+    <app-experience></app-experience>
+    <app-skills></app-skills>
+    <app-projects></app-projects>
+    <app-contact></app-contact>
+
+    <footer
+      class="py-6 px-4 bg-white/30 dark:bg-dark-900/30 dark:text-white text-center"
+    >
+      <p>&copy; {{ currentYear }} Yousif Ibrahim. All rights reserved.</p>
+    </footer>
+  </main>
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { ThemeService } from './services/theme.service';
 import { CanvasBackgroundComponent } from './components/canvas-background/canvas-background.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -9,12 +9,15 @@ import { ExperienceComponent } from './components/experience/experience.componen
 import { SkillsComponent } from './components/skills/skills.component';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { LoadingSpinnerComponent } from "./shared/loading-spinner/loading-spinner.component";
+import { LoadingService } from './shared/loading.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     CommonModule,
+    AsyncPipe,
     CanvasBackgroundComponent,
     SidebarComponent,
     HeroComponent,
@@ -22,41 +25,28 @@ import { ContactComponent } from './components/contact/contact.component';
     ExperienceComponent,
     SkillsComponent,
     ProjectsComponent,
-    ContactComponent
-  ],
-  template: `
-    <app-canvas-background [isDarkTheme]="isDarkTheme()"></app-canvas-background>
-    
-    <div class="relative min-h-screen">
-      <app-sidebar (sidebarToggled)="sidebarExpanded = $event"></app-sidebar>
-      
-      <main 
-        class="transition-all duration-300"
-        [class.main-content-expanded]="sidebarExpanded"
-        [class.main-content-collapsed]="!sidebarExpanded"
-      >
-        <app-hero></app-hero>
-        <app-about></app-about>
-        <app-experience></app-experience>
-        <app-skills></app-skills>
-        <app-projects></app-projects>
-        <app-contact></app-contact>
-        
-        <footer class="py-6 px-4 bg-white dark:bg-dark-900 dark:text-white text-center">
-          <p>&copy; {{ currentYear }} Yousif Ibrahim. All rights reserved.</p>
-        </footer>
-      </main>
-    </div>
-  `
+    ContactComponent,
+    LoadingSpinnerComponent
+],
+  templateUrl: "./app.component.html",
 })
 export class App implements OnInit {
   sidebarExpanded = false;
   isDarkTheme = signal(true);
   currentYear = new Date().getFullYear();
-
-  constructor(private themeService: ThemeService) {}
+  isLoading = this.loadingService.loading$;
+  constructor(private themeService: ThemeService,private loadingService: LoadingService) {}
 
   ngOnInit(): void {
+
+    this.isDarkTheme.set(true);
+    this.isLoading = this.loadingService.loading$;
+    this.loadingService.show();
+    setTimeout(() => {
+      this.loadingService.hide();
+    }, 1000); // 4 ثواني مثلًا
+
+
     this.themeService.isDarkTheme$.subscribe(isDark => {
       this.isDarkTheme.set(isDark);
     });

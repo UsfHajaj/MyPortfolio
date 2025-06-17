@@ -1,0 +1,149 @@
+<section id="projects" class="section">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="section-title">Projects</h2>
+
+    <!-- Filter Section -->
+    <div class="flex flex-wrap justify-center gap-4 mt-8 mb-12">
+      <button
+        *ngFor="let filter of filters"
+        (click)="setActiveFilter(filter.value)"
+        [class]="getFilterButtonClass(filter.value)"
+        class="px-6 py-2 rounded-full text-sm font-medium transition-all duration-300"
+      >
+        {{ filter.label }}
+      </button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div
+        *ngFor="let project of getCurrentPageProjects()"
+        class="project-card overflow-hidden"
+      >
+        <div class="h-48 overflow-hidden relative">
+          <img
+            [src]="project.image"
+            [alt]="project.title"
+            class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent opacity-60"
+          ></div>
+        </div>
+
+        <div class="p-6">
+          <h3 class="text-xl font-bold mb-2">{{ project.title }}</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-4">
+            {{ project.description }}
+          </p>
+
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span
+              *ngFor="let tech of project.technologies"
+              class="px-2 py-1 text-xs rounded-full bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-100"
+            >
+              {{ tech }}
+            </span>
+          </div>
+
+          <div class="flex space-x-4">
+            <a
+              *ngIf="project.demoLink"
+              [href]="project.demoLink"
+              target="_blank"
+              class="text-primary-500 hover:text-primary-600 transition flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+              Demo
+            </a>
+            <a
+              [href]="project.codeLink"
+              target="_blank"
+              class="text-primary-500 hover:text-primary-600 transition flex items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                />
+              </svg>
+              Code
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div
+      class="flex justify-center items-center mt-12 gap-4"
+      *ngIf="getTotalPages() > 1"
+    >
+      <button
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+        class="px-4 py-2 rounded-lg bg-primary-500 text-white disabled:bg-gray-600/30 disabled:cursor-not-allowed hover:bg-primary-600 transition"
+      >
+        Previous
+      </button>
+
+      <div class="flex gap-2">
+        <button
+          *ngFor="let page of getPageNumbers()"
+          (click)="goToPage(page)"
+          [class]="getPageButtonClass(page)"
+          class="px-3 py-2 rounded-lg transition"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === getTotalPages()"
+        class="px-4 py-2 rounded-lg bg-primary-500 text-white disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-primary-600 transition"
+      >
+        Next
+      </button>
+    </div>
+
+    <!-- Pagination Info -->
+    <div
+      class="text-center mt-4 text-gray-600 dark:text-gray-300"
+      *ngIf="getTotalPages() > 1"
+    >
+      Showing {{ (currentPage - 1) * projectsPerPage + 1 }} -
+      {{
+        Math.min(currentPage * projectsPerPage, getFilteredProjects().length)
+      }}
+      of {{ getFilteredProjects().length }} projects
+    </div>
+  </div>
+</section>

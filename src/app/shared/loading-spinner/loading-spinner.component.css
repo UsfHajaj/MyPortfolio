@@ -1,0 +1,169 @@
+/* CSS Styles */
+.loading-overlay {
+  @apply fixed inset-0 z-50 flex flex-col items-center justify-center;
+  background: rgba(10, 10, 10, 0.075);
+  backdrop-filter: blur(5px);
+}
+
+/* Light theme support */
+
+/* Spinner Container */
+.spinner-container {
+  @apply relative flex flex-col items-center gap-8 z-10;
+}
+
+/* Code Spinner */
+.code-spinner {
+  @apply relative w-32 h-32 flex items-center justify-center;
+}
+
+/* Rings */
+.outer-ring {
+  @apply absolute w-32 h-32 rounded-full border-2 border-transparent animate-spin;
+  border-top-color: #00d4ff;
+  border-right-color: #ff6b6b;
+  animation: spin 2s linear infinite;
+}
+
+.middle-ring {
+  @apply absolute rounded-full border-2 border-transparent;
+  width: 90px;
+  height: 90px;
+  border-top-color: #4ecdc4;
+  border-left-color: #45b7d1;
+  animation: spin 1.5s linear infinite reverse;
+}
+
+.inner-ring {
+  @apply absolute w-14 h-14 rounded-full border-2 border-transparent;
+  border-top-color: #96ceb4;
+  border-bottom-color: #ffeaa7;
+  animation: spin 1s linear infinite;
+}
+
+/* Code Symbol */
+.code-symbol {
+  @apply relative text-2xl text-cyan-400 font-bold z-10;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Loading Text */
+
+/* Progress Dots */
+.progress-dots {
+  @apply flex gap-2 mt-5;
+}
+
+.dot {
+  @apply w-2 h-2 bg-cyan-400 rounded-full;
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.dot:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.6),
+      0 0 30px rgba(0, 212, 255, 0.4);
+  }
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.6;
+  }
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .code-spinner {
+    @apply w-24 h-24;
+  }
+
+  .outer-ring {
+    @apply w-24 h-24;
+  }
+
+  .middle-ring {
+    width: 75px;
+    height: 75px;
+  }
+
+  .inner-ring {
+    @apply w-12 h-12;
+  }
+
+  .code-symbol {
+    @apply text-xl;
+  }
+}

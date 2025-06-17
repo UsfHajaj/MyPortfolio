@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 interface Project {
   title: string;
@@ -8,121 +8,355 @@ interface Project {
   technologies: string[];
   demoLink: string;
   codeLink: string;
+  category: string; // إضافة فئة للمشروع
 }
 
 @Component({
-  selector: 'app-projects',
+  selector: "app-projects",
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <section id="projects" class="section">
-      <div class="max-w-6xl mx-auto">
-        <h2 class="section-title">Projects</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-          <div *ngFor="let project of projects" class="project-card overflow-hidden">
-            <div class="h-48 overflow-hidden relative">
-              <img 
-                [src]="project.image" 
-                [alt]="project.title" 
-                class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-              >
-              <div class="absolute inset-0 bg-gradient-to-t from-dark-900 to-transparent opacity-60"></div>
-            </div>
-            
-            <div class="p-6">
-              <h3 class="text-xl font-bold mb-2">{{ project.title }}</h3>
-              <p class="text-gray-600 dark:text-gray-300 mb-4">{{ project.description }}</p>
-              
-              <div class="flex flex-wrap gap-2 mb-6">
-                <span 
-                  *ngFor="let tech of project.technologies" 
-                  class="px-2 py-1 text-xs rounded-full bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-100"
-                >
-                  {{ tech }}
-                </span>
-              </div>
-              
-              <div class="flex space-x-4">
-                <a 
-                  [href]="project.demoLink" 
-                  target="_blank" 
-                  class="text-primary-500 hover:text-primary-600 transition flex items-center"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Demo
-                </a>
-                
-                <a 
-                  [href]="project.codeLink" 
-                  target="_blank" 
-                  class="text-primary-500 hover:text-primary-600 transition flex items-center"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                  </svg>
-                  Code
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  `
+  templateUrl: "./projects.component.html",
 })
 export class ProjectsComponent {
+  currentPage = 1;
+  projectsPerPage = 6;
+  activeFilter = "all";
+
+  filters = [
+    { label: "All", value: "all" },
+    { label: "Full Stack", value: "fullstack" },
+    { label: "Backend", value: "backend" },
+    { label: "Frontend", value: "frontend" },
+    { label: "AI", value: "ai" },
+    { label: "Data Analysis", value: "data-analysis" },
+  ];
+
   projects: Project[] = [
     {
-      title: 'E-Commerce Platform',
-      description: 'A full-featured e-commerce platform with product catalog, cart, and checkout functionality.',
-      image: 'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      technologies: ['Angular', 'Node.js', 'Express', 'MongoDB'],
-      demoLink: 'https://example.com/demo1',
-      codeLink: 'https://github.com/username/project1'
+      title: "Full Ecommerce Web Application (.NET & Angular)",
+      description:
+        "full-stack e-commerce application built with ASP.NET Core for the backend and Angular for the frontend. It follows Clean Architecture principles, integrates with Stripe for payments, uses Redis for basket caching, and applies Entity Framework Core with Fluent API for database interaction.",
+      image:
+        "assets/projects/ecom.png",
+      technologies: [
+        "Angular",
+        "ASP.NET Core",
+        "Entity Framework",
+        "JWT Authentication",
+        "SQL Server",
+        "Redis",
+        "Docker",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/Full-Ecommerce-.NET-Anguler-",
+      category: "fullstack",
     },
     {
-      title: 'Task Management App',
-      description: 'A Kanban-style task management application with drag-and-drop functionality.',
-      image: 'https://images.pexels.com/photos/3243/pen-calendar-to-do-checklist.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      technologies: ['Angular', 'TypeScript', 'Firebase'],
-      demoLink: 'https://example.com/demo2',
-      codeLink: 'https://github.com/username/project2'
+      title: "CineFlex Movie Booking System (.NET MVC)",
+      description:
+        "A movie ticket booking system built using ASP.NET Core MVC. It allows users to browse movies, view details, and book tickets. Includes an admin panel for managing movies, cinemas, actors, producers, and orders. Uses Entity Framework Core, layered architecture, and role-based authentication.",
+      image: "assets/projects/mvc.png",
+      technologies: [
+        "ASP.NET Core MVC",
+        "Entity Framework Core",
+        "SQL Server",
+        "Bootstrap",
+        "jQuery",
+        "C#",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/CineFlex",
+      category: "fullstack",
     },
     {
-      title: 'Weather Dashboard',
-      description: 'A weather forecast application with real-time updates and location-based services.',
-      image: 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      technologies: ['Angular', 'TypeScript', 'Weather API'],
-      demoLink: 'https://example.com/demo3',
-      codeLink: 'https://github.com/username/project3'
+      title: "Medical Center Management System (.NET Web API)",
+      description:
+        "A powerful backend API for managing users, appointments, reviews, and medical centers. Built using ASP.NET Core 9.0 with a clean architecture. Features include JWT authentication, email confirmation, role-based access (admin, doctor, patient), and Swagger documentation.",
+      image:
+        "assets/projects/ms.png",
+      technologies: [
+        "ASP.NET Core 9.0",
+        "Entity Framework Core",
+        "SQL Server",
+        "JWT Authentication",
+        "Swagger",
+        "RESTful API",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/MedicalCenter",
+      category: "backend",
     },
     {
-      title: 'Fitness Tracker',
-      description: 'An application to track workouts, set goals, and monitor progress over time.',
-      image: 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      technologies: ['Angular', 'TypeScript', 'Chart.js', 'Firebase'],
-      demoLink: 'https://example.com/demo4',
-      codeLink: 'https://github.com/username/project4'
+      title: "Learning Management System (.NET Web API)",
+      description:
+        "A modular and clean backend API for an LMS platform built with ASP.NET Core 9.0. It handles user authentication, course and lesson management, student enrollment, quizzes, assignments, and discussions, all following RESTful architecture with role-based access control.",
+      image: "assets/projects/lms.png",
+      technologies: [
+        "ASP.NET Core 9.0",
+        "Entity Framework Core",
+        "SQL Server",
+        "JWT Authentication",
+        "AutoMapper",
+        "RESTful API",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/LMS",
+      category: "backend",
     },
     {
-      title: 'Recipe Finder',
-      description: 'A recipe search engine with filtering options and personalized recommendations.',
-      image: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      technologies: ['Angular', 'TypeScript', 'Food API'],
-      demoLink: 'https://example.com/demo5',
-      codeLink: 'https://github.com/username/project5'
+      title: "E-Commerce API (.NET Web API)",
+      description:
+        "A modular and scalable backend API for an E-Commerce platform built with ASP.NET Core 9.0. It supports complete user authentication, product and order management, seller operations, shopping cart, payments, and reviews, all following clean architecture and RESTful principles.",
+      image:
+        "assets/projects/ecomapi.png",
+      technologies: [
+        "ASP.NET Core 9.0",
+        "Entity Framework Core",
+        "SQL Server",
+        "JWT Authentication",
+        "AutoMapper",
+        "RESTful API",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/ECommerce",
+      category: "backend",
     },
     {
-      title: 'Budget Tracker',
-      description: 'A personal finance application to track income, expenses, and savings goals.',
-      image: 'https://images.pexels.com/photos/3943716/pexels-photo-3943716.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      technologies: ['Angular', 'TypeScript', 'Chart.js', 'LocalStorage'],
-      demoLink: 'https://example.com/demo6',
-      codeLink: 'https://github.com/username/project6'
-    }
+      title: "E-Commerce Frontend (Angular)",
+      description:
+        "A responsive and modular e-commerce frontend built using Angular. It includes user authentication, product listings, category browsing, shopping cart functionality, route protection, interceptors, and clean component-based architecture with separate layouts for authenticated and non-authenticated users.",
+      image:
+        "assets/projects/fre2.png",
+      technologies: [
+        "Angular",
+        "TypeScript",
+        "RxJS",
+        "Bootstrap",
+        "SCSS",
+        "Angular Router",
+        "Guards & Interceptors",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/Ecommerce-Angular/tree/master",
+      category: "frontend",
+    },
+    {
+      title: "Amazon clone",
+      description:
+        "A simple and responsive e-commerce website built with HTML, CSS, and JavaScript (Vanilla JS). It features product listing, a shopping cart page, and dynamic navigation using plain JavaScript without any frameworks.",
+      image: "assets/projects/am.png",
+      technologies: [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "DOM Manipulation",
+        "Responsive Design",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/Amazon-Clone",
+      category: "frontend",
+    },
+    {
+      title: "Travel & Booking Website",
+      description:
+        "A responsive travel booking website built using PHP, HTML, CSS, and JavaScript. Users can browse travel packages, submit booking forms, and view information about destinations. The website includes interactive elements like sliders using Swiper.js for enhanced user experience.",
+      image: "assets/projects/tr.png",
+      technologies: [
+        "PHP",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Swiper.js",
+        "Form Handling",
+        "Responsive Design",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/travel_-website/tree/master",
+      category: "fullstack",
+    },
+    {
+      title: "Social Media Web UI",
+      description:
+        "A fully responsive front-end interface for a social media platform. Built using HTML, CSS, and JavaScript, the project features a modern feed layout, story section, profile previews, and interactive elements to mimic real social media behavior.",
+      image: "assets/projects/smc.png",
+      technologies: [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Responsive Design",
+        "DOM Manipulation",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/social-media-app/tree/master",
+      category: "frontend",
+    },
+    {
+      title: "Simple Landing Page Project",
+      description:
+        "A clean and responsive landing page built with HTML and CSS. The page demonstrates layout structuring, image integration, and style normalization for consistent cross-browser appearance. Ideal for showcasing basic frontend development skills.",
+      image: "assets/projects/ln2.png",
+      technologies: ["HTML", "CSS", "Responsive Design", "Normalize.css"],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/Landden-Page/tree/main",
+      category: "frontend",
+    },
+    {
+      title: "AI Text-to-Image Generator (IMATOR)",
+      description:
+        "An advanced AI system that generates high-quality images from textual prompts using diffusion-based generative models. The project leverages state-of-the-art diffusion techniques and fine-tunes models to produce visually compelling outputs based on user input. Includes experiments on artistic styles like Ancient Egyptian imagery.",
+      image: "assets/projects/Imator.png",
+      technologies: [
+        "Diffusion Models",
+        "Python",
+        "PyTorch",
+        "Hugging Face Transformers",
+        "Stable Diffusion",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/IMATOR",
+      category: "ai",
+    },
+    {
+      title: "Data Analysis Projects",
+      description:
+        "A collection of real-world data analysis projects designed to extract insights and support business decision-making. These projects demonstrate proficiency in data cleaning, transformation, visualization, and storytelling using Microsoft Excel and Power BI. Key insights were derived from product performance, store operations, and overall business trends.",
+      image: "assets/projects/toy.png",
+      technologies: [
+        "Microsoft Excel",
+        "Power BI",
+        "Data Cleaning",
+        "Data Visualization",
+        "Dashboard Design",
+        "Git",
+      ],
+      demoLink: "",
+      codeLink:
+        "https://github.com/UsfHajaj/Data-Analysis-Projects/blob/main/Toy%20Store%20Sales/README.md",
+      category: "data-analysis",
+    },
+    {
+      title: "Patients Healthcare Dashboard",
+      description:
+        "An interactive healthcare data analysis project that explores patient demographics, visit patterns, wait times, and feedback. The project identifies key operational insights using Power BI and Excel, aiming to enhance patient services and optimize clinic workflows.",
+      image: "assets/projects/PH.png",
+      technologies: [
+        "Microsoft Excel",
+        "Power BI",
+        "Data Cleaning",
+        "Data Visualization",
+        "Healthcare Analytics",
+        "Python",
+      ],
+      demoLink: "",
+      codeLink:
+        "https://github.com/UsfHajaj/Data-Analysis-Projects/blob/main/Patients%20Healthcare/README.md",
+      category: "data-analysis",
+    },
+    {
+      title: "Netflix Userbase Analysis",
+      description:
+        "An interactive dashboard analyzing Netflix's userbase to uncover trends in subscription preferences, device usage, demographics, and revenue distribution. Using Excel and Power BI, this project identifies patterns across countries, age groups, and genders to support data-driven business strategies.",
+      image: "assets/projects/n.png",
+      technologies: [
+        "Microsoft Excel",
+        "Data Visualization",
+        "Demographic Analysis",
+      ],
+      demoLink: "",
+      codeLink:
+        "https://github.com/UsfHajaj/Data-Analysis-Projects/blob/main/Netflix%20Userbase/README.md",
+      category: "data-analysis",
+    },
+    {
+      title: "AI-Based Irrigation Scheduling System",
+      description:
+        "A freelance project delivering a smart irrigation scheduling system powered by machine learning. It provides personalized watering recommendations based on soil, weather, and crop data. Built using Python, the system uses ensemble models to optimize water usage, reduce cost, and improve crop yields.",
+      image: "assets/projects/ir.png",
+      technologies: [
+        "Python",
+        "Pandas",
+        "NumPy",
+        "Scikit-learn",
+        "XGBoost",
+        "Streamlit",
+        "Data Preprocessing",
+        "Ensemble Learning",
+      ],
+      demoLink: "",
+      codeLink: "https://github.com/UsfHajaj/irrigation-scheduling",
+      category: "ai",
+    },
   ];
+
+  // Get filtered projects based on active filter
+  getFilteredProjects(): Project[] {
+    if (this.activeFilter === "all") {
+      return this.projects;
+    }
+    return this.projects.filter(
+      (project) => project.category === this.activeFilter
+    );
+  }
+
+  // Get projects for current page
+  getCurrentPageProjects(): Project[] {
+    const filteredProjects = this.getFilteredProjects();
+    const startIndex = (this.currentPage - 1) * this.projectsPerPage;
+    const endIndex = startIndex + this.projectsPerPage;
+    return filteredProjects.slice(startIndex, endIndex);
+  }
+
+  // Get total pages
+  getTotalPages(): number {
+    return Math.ceil(this.getFilteredProjects().length / this.projectsPerPage);
+  }
+
+  // Get page numbers array
+  getPageNumbers(): number[] {
+    const totalPages = this.getTotalPages();
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // Set active filter
+  setActiveFilter(filter: string): void {
+    this.activeFilter = filter;
+    this.currentPage = 1; // Reset to first page when filter changes
+  }
+
+  // Navigation methods
+  nextPage(): void {
+    if (this.currentPage < this.getTotalPages()) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
+  }
+
+  // CSS class methods
+  getFilterButtonClass(filter: string): string {
+    return this.activeFilter === filter
+      ? "bg-primary-500 text-white shadow-md ring-2 ring-primary-300 dark:ring-primary-600"
+      : "bg-white/30 dark:bg-gray-800/30 hover:bg-white/80 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300  hover:text-primary-700 dark:hover:text-primary-300 transition-all duration-200";
+  }
+
+  getPageButtonClass(page: number): string {
+    return this.currentPage === page
+      ? "bg-primary-500 text-white shadow-md ring-2 ring-primary-300 dark:ring-primary-600"
+      : "bg-white/30 dark:bg-gray-800/30 hover:bg-white/80 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300  hover:text-primary-700 dark:hover:text-primary-300 transition-all duration-200";
+  }
+
+  // Add Math to component for template usage
+  Math = Math;
 }

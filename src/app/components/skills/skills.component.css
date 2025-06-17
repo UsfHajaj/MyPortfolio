@@ -1,0 +1,77 @@
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(-180deg);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Staggered Animation */
+.group:nth-child(1) {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+.group:nth-child(2) {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+.group:nth-child(3) {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+.group:nth-child(4) {
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+.group:nth-child(5) {
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+.group:nth-child(6) {
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+.group:nth-child(7) {
+  animation: fadeInUp 0.6s ease-out 0.7s both;
+}
+.group:nth-child(8) {
+  animation: fadeInUp 0.6s ease-out 0.8s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
