@@ -1,0 +1,180 @@
+<div class="world" [class.world--entered]="state.entered()" [class.world--panel]="state.panelOpen()" [class.world--travelling]="state.travelling()">
+  <canvas #canvas class="world__canvas" aria-label="Interactive 3D universe. Drag to look around, scroll to zoom, click a landmark to travel." role="application"></canvas>
+
+  <!-- 3D-anchored HTML labels -->
+  <div #labelsLayer class="labels" aria-hidden="false">
+    @for (label of labelDefs(); track label.id) {
+      <button
+        type="button"
+        class="label"
+        [class.label--destination]="label.kind === 'destination'"
+        [class.label--sub]="label.kind === 'sub'"
+        [attr.data-label-id]="label.id"
+        [attr.aria-label]="label.kind === 'destination' ? 'Travel to ' + label.text : 'Select ' + label.text"
+        (click)="onLabelClick(label, $event)"
+        tabindex="-1"
+      >
+        <span class="label__dot" aria-hidden="true"></span>
+        <span class="label__text">{{ label.text }}</span>
+        @if (label.kind === 'destination') {
+          <span class="label__cta" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- HUD -->
+  @if (state.entered()) {
+    <header class="hud hud--top">
+      <div class="brand">
+        <button type="button" class="brand__name" (click)="goHome()" aria-label="Return to Halo Station">{{ profile.name }}</button>
+        <span class="brand__role">{{ profile.headline }}</span>
+      </div>
+
+      <div class="readout" aria-live="polite">
+        @if (state.travelling()) {
+          <span class="readout__label">En route</span>
+          <span class="readout__value">
+            <i class="fa-solid fa-location-arrow readout__icon" aria-hidden="true"></i>
+            {{ state.targetDestination()?.place ?? 'System overview' }}
+          </span>
+          <span class="readout__bar" [style.animation-duration.s]="state.travelDuration()"></span>
+        } @else if (state.currentView() === 'overview') {
+          <span class="readout__label">System overview</span>
+          <span class="readout__value">Select any destination to travel</span>
+        } @else {
+          <span class="readout__label">Current location</span>
+          <span class="readout__value"><i [class]="(state.currentDestination()?.icon ?? '') + ' readout__icon'" aria-hidden="true"></i> {{ state.currentDestination()?.place }}</span>
+        }
+      </div>
+
+      <nav class="controls" aria-label="Universe controls">
+        <button type="button" class="ctl" (click)="toggleSound()" [class.active]="state.soundEnabled()" [attr.aria-pressed]="state.soundEnabled()" [attr.aria-label]="state.soundEnabled() ? 'Mute sound' : 'Enable sound'" title="Sound (S)">
+          <i class="fa-solid" [class.fa-volume-high]="state.soundEnabled()" [class.fa-volume-xmark]="!state.soundEnabled()" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="ctl" (click)="toggleTour()" [class.active]="state.tourActive()" [attr.aria-pressed]="state.tourActive()" [attr.aria-label]="state.tourActive() ? 'Stop guided tour' : 'Start guided tour'" title="Guided tour (T)">
+          <i class="fa-solid" [class.fa-route]="!state.tourActive()" [class.fa-stop]="state.tourActive()" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="ctl" (click)="travelTo('overview')" [class.active]="state.targetView() === 'overview'" aria-label="System overview" title="Overview map (M)">
+          <i class="fa-solid fa-map" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="ctl" (click)="toggleHelp()" [class.active]="state.helpOpen()" aria-label="Help and settings" title="Help (?)">
+          <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="ctl ctl--text" (click)="switchToClassic()" aria-label="Switch to the classic page" title="Classic view (C)">
+          <i class="fa-solid fa-list" aria-hidden="true"></i><span>Classic</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Destination dock -->
+    <nav class="dock" aria-label="Destinations">
+      @for (d of state.destinations; track d.id) {
+        <button
+          type="button"
+          class="dock__item"
+          [class.active]="state.targetView() === d.id"
+          [class.current]="state.currentView() === d.id && !state.travelling()"
+          [style.--dock-color]="d.color"
+          (click)="travelTo(d.id)"
+          [attr.aria-current]="state.currentView() === d.id ? 'location' : null"
+          [attr.aria-label]="d.label + ' — ' + d.place"
+        >
+          <i [class]="d.icon" aria-hidden="true"></i>
+          <span class="dock__label">{{ d.label }}</span>
+          <kbd class="dock__key" aria-hidden="true">{{ d.shortcut }}</kbd>
+        </button>
+      }
+    </nav>
+
+    <!-- Minimap -->
+    @if (!isNarrow()) {
+      <div class="hud hud--minimap">
+        <app-minimap (select)="travelTo($event)"></app-minimap>
+      </div>
+    }
+
+    <!-- Bottom-right helpers -->
+    <div class="hud hud--aside">
+      @if (state.tourActive()) {
+        <div class="tour-chip" role="status">
+          <span class="tour-chip__pulse" aria-hidden="true"></span>
+          Guided tour in progress
+          <button type="button" (click)="stopTour()">Stop</button>
+        </div>
+      }
+      @if (!state.panelOpen() && !state.travelling() && state.currentView() !== 'overview') {
+        <button type="button" class="aside-btn aside-btn--primary" (click)="openPanel()">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i> Show {{ state.currentDestination()?.label }} details
+        </button>
+      }
+      @if (!state.atHub() && !state.travelling()) {
+        <button type="button" class="aside-btn" (click)="goHome()">
+          <i class="fa-solid fa-house" aria-hidden="true"></i> Return to hub
+        </button>
+      }
+      @if (showHint() && !state.introPlaying()) {
+        <p class="hint">
+          @if (state.isTouch()) {
+            Drag to look · Pinch to zoom · Tap a landmark to travel
+          } @else {
+            Drag to look · Scroll to zoom · Click a landmark · ← → to travel
+          }
+        </p>
+      }
+    </div>
+
+    <!-- Location panel -->
+    <div class="panel-host" [class.panel-host--open]="state.panelOpen()" [attr.aria-hidden]="!state.panelOpen()">
+      @if (state.panelOpen() && state.currentView() !== 'overview') {
+        <app-location-panel
+          [view]="state.currentView()"
+          (travel)="travelTo($event)"
+          (select)="onPanelSelect($event)"
+          (tour)="startTour()"
+          (close)="closePanel()"
+          (classic)="switchToClassic()"
+        ></app-location-panel>
+      }
+    </div>
+
+    <!-- Help / settings overlay -->
+    @if (state.helpOpen()) {
+      <div class="help" role="dialog" aria-modal="true" aria-label="Help and settings" (click)="toggleHelp()">
+        <div class="help__card" (click)="$event.stopPropagation()">
+          <header>
+            <h2>Navigation</h2>
+            <button type="button" class="ctl" (click)="toggleHelp()" aria-label="Close help"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+          </header>
+          <dl class="help__keys">
+            <div><dt>Drag</dt><dd>Look around the current location</dd></div>
+            <div><dt>Scroll / pinch</dt><dd>Zoom in and out</dd></div>
+            <div><dt>Click landmark</dt><dd>Travel there, or select an item inside a location</dd></div>
+            <div><dt><kbd>1</kbd>–<kbd>7</kbd></dt><dd>Jump to a destination</dd></div>
+            <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Previous / next destination</dd></div>
+            <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Cycle projects, experiences, skills or certifications</dd></div>
+            <div><dt><kbd>Enter</kbd></dt><dd>Open the details panel</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Close panel · stop tour · return to hub</dd></div>
+            <div><dt><kbd>M</kbd></dt><dd>System overview</dd></div>
+            <div><dt><kbd>T</kbd></dt><dd>Guided tour</dd></div>
+            <div><dt><kbd>S</kbd></dt><dd>Toggle sound</dd></div>
+            <div><dt><kbd>C</kbd></dt><dd>Classic page view</dd></div>
+          </dl>
+          <h3>Rendering quality</h3>
+          <p class="help__note">Detected tier: <strong>{{ state.activeTier() }}</strong>@if (state.reducedMotion()) { · reduced motion respected }</p>
+          <div class="help__quality" role="radiogroup" aria-label="Rendering quality">
+            @for (option of qualityOptions; track option.value) {
+              <button type="button" role="radio" [attr.aria-checked]="state.qualityPreference() === option.value" [class.active]="state.qualityPreference() === option.value" (click)="setQuality(option.value)">{{ option.label }}</button>
+            }
+          </div>
+          <p class="help__note">Low quality disables bloom and nebulae and halves the star count — useful on older laptops or to save battery.</p>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Loading -->
+  @if (!state.entered()) {
+    <app-loading-screen (enter)="enter($event)" (classic)="switchToClassic()"></app-loading-screen>
+  }
+</div>

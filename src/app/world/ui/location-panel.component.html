@@ -1,0 +1,278 @@
+<aside class="panel" [class.panel--hub]="view === 'hub'" aria-live="polite">
+  <header class="panel__head">
+    <div>
+      <p class="panel__eyebrow" *ngIf="destination() as d">
+        <i [class]="d.icon" aria-hidden="true"></i>
+        <span>{{ d.place }}</span>
+      </p>
+      <h2 class="panel__title" *ngIf="view !== 'hub'">{{ destination()?.label }}</h2>
+    </div>
+    <button type="button" class="panel__close" (click)="close.emit()" aria-label="Close panel and keep exploring">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </header>
+
+  <div class="panel__body">
+    @switch (view) {
+      <!-- ───────────────────────── HOME / HUB ───────────────────────── -->
+      @case ('hub') {
+        <section class="hub">
+          <p class="hub__hello">// Hello, world — welcome aboard</p>
+          <h1 class="hub__name">{{ profile.name }}</h1>
+          <p class="hub__typed">
+            <span class="hub__typed-text">{{ typedTitle() }}</span><span class="caret" aria-hidden="true"></span>
+          </p>
+          <p class="hub__intro">{{ profile.intro }}</p>
+
+          <ul class="stats" aria-label="Highlights">
+            <li><strong>{{ profile.yearsExperience }}</strong><span>years building software</span></li>
+            <li><strong>{{ projects.length }}</strong><span>projects shipped</span></li>
+            <li><strong>{{ certifications.length }}</strong><span>certifications</span></li>
+          </ul>
+
+          <div class="hub__actions">
+            <button type="button" class="btn btn--primary" (click)="travel.emit('about')">
+              Begin exploration <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn--ghost" (click)="tour.emit()">
+              <i class="fa-solid fa-route" aria-hidden="true"></i> Guided tour
+            </button>
+          </div>
+          <div class="hub__secondary">
+            <button type="button" class="pill" (click)="downloadCv()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download CV</button>
+            <button type="button" class="pill" (click)="travel.emit('contact')"><i class="fa-solid fa-satellite-dish" aria-hidden="true"></i> Contact</button>
+            <a *ngFor="let s of socials" class="pill pill--icon" [href]="s.href" target="_blank" rel="noopener" [attr.aria-label]="s.label"><i [class]="s.icon" aria-hidden="true"></i></a>
+          </div>
+
+          <nav class="hub__map" aria-label="Destinations">
+            <p class="hub__map-title">Destinations in this system</p>
+            <ul>
+              @for (d of state.destinations; track d.id) {
+                @if (d.id !== 'hub') {
+                  <li>
+                    <button type="button" (click)="travel.emit(d.id)">
+                      <i [class]="d.icon" aria-hidden="true" [style.color]="d.color"></i>
+                      <span class="hub__map-label">{{ d.label }}</span>
+                      <span class="hub__map-place">{{ d.place }}</span>
+                      <kbd>{{ d.shortcut }}</kbd>
+                    </button>
+                  </li>
+                }
+              }
+            </ul>
+          </nav>
+          <button type="button" class="link" (click)="classic.emit()">Prefer a traditional page? Switch to the classic view.</button>
+        </section>
+      }
+
+      <!-- ───────────────────────── ABOUT ───────────────────────── -->
+      @case ('about') {
+        <section class="about">
+          <div class="about__portrait">
+            <img [src]="profile.photo" alt="Portrait of {{ profile.name }}" width="120" height="120" />
+            <div>
+              <p class="about__name">{{ profile.name }}</p>
+              <p class="about__role">{{ profile.headline }}</p>
+              <p class="about__status"><span class="dot"></span> Available for new opportunities</p>
+            </div>
+          </div>
+          <p *ngFor="let paragraph of profile.about" class="prose">{{ paragraph }}</p>
+
+          <dl class="facts">
+            <div><dt>Location</dt><dd>{{ profile.location }}</dd></div>
+            <div><dt>Experience</dt><dd>{{ profile.yearsExperience }} years</dd></div>
+            <div><dt>Email</dt><dd><a [href]="'mailto:' + profile.email">{{ profile.email }}</a></dd></div>
+            <div><dt>Phone</dt><dd><a [href]="'tel:' + profile.phone">{{ profile.phone }}</a></dd></div>
+            <div><dt>Languages</dt><dd>{{ languages[0].name }} ({{ languages[0].level }}) · {{ languages[1].name }} ({{ languages[1].level }})</dd></div>
+          </dl>
+          <div class="row">
+            <button type="button" class="pill" (click)="downloadCv()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download CV</button>
+            <button type="button" class="pill" (click)="travel.emit('experience')">Next: Experience <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────────────────── EXPERIENCE ───────────────────────── -->
+      @case ('experience') {
+        <section class="experience">
+          <p class="hint">Each relay installation is a chapter. Click one in the scene or below.</p>
+          <ol class="timeline" aria-label="Career timeline">
+            @for (exp of experiences; track exp.company + exp.period; let i = $index) {
+              <li [class.active]="i === state.experienceIndex()">
+                <button type="button" (click)="select.emit({ kind: 'experience', index: i })" [attr.aria-expanded]="i === state.experienceIndex()">
+                  <span class="timeline__period">{{ exp.period }}</span>
+                  <span class="timeline__company">{{ exp.company }}</span>
+                  <span class="timeline__title">{{ exp.title }}</span>
+                </button>
+                @if (i === state.experienceIndex()) {
+                  <div class="timeline__detail">
+                    <p class="prose">{{ exp.description }}</p>
+                    <ul class="bullets">
+                      <li *ngFor="let a of exp.achievements">{{ a }}</li>
+                    </ul>
+                  </div>
+                }
+              </li>
+            }
+          </ol>
+          <div class="row">
+            <button type="button" class="pill" (click)="travel.emit('skills')">Next: Skills <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────────────────── SKILLS ───────────────────────── -->
+      @case ('skills') {
+        <section class="skills">
+          <p class="hint">Four orbital shells circle the core — one per discipline. Select a shell:</p>
+          <div class="tabs" role="tablist">
+            @for (cat of skillCategories; track cat.id; let i = $index) {
+              <button
+                type="button"
+                role="tab"
+                [attr.aria-selected]="i === state.skillCategoryIndex()"
+                [class.active]="i === state.skillCategoryIndex()"
+                [style.--tab-color]="cat.color"
+                (click)="select.emit({ kind: 'skill', index: i })"
+              >
+                <span class="tab__dot"></span>{{ cat.name }}
+              </button>
+            }
+          </div>
+          @if (activeCategory(); as cat) {
+            <p class="prose">{{ cat.summary }}</p>
+            <ul class="skill-grid" role="tabpanel">
+              @for (skill of cat.skills; track skill.name) {
+                <li>
+                  <img [src]="skill.icon" [alt]="skill.name + ' icon'" loading="lazy" width="36" height="36" />
+                  <span class="skill-grid__name">{{ skill.name }}</span>
+                  <span class="skill-grid__desc">{{ skill.description }}</span>
+                </li>
+              }
+            </ul>
+          }
+          <div class="row">
+            <button type="button" class="pill" (click)="travel.emit('projects')">Next: Projects <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────────────────── PROJECTS ───────────────────────── -->
+      @case ('projects') {
+        <section class="projects">
+          <div class="chips" role="group" aria-label="Filter projects">
+            @for (f of filters; track f.value) {
+              <button type="button" class="chip" [class.active]="projectFilter() === f.value" (click)="setFilter(f.value)">{{ f.label }}</button>
+            }
+          </div>
+
+          @if (activeProject(); as project) {
+            <article class="project">
+              <div class="project__media">
+                <img [src]="currentProjectImage()" [alt]="'Screenshot of ' + project.title" />
+                @if (projectImages(state.projectIndex()).length > 1) {
+                  <button type="button" class="media-nav media-nav--prev" (click)="stepProjectImage(-1)" aria-label="Previous screenshot"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                  <button type="button" class="media-nav media-nav--next" (click)="stepProjectImage(1)" aria-label="Next screenshot"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                  <div class="media-dots">
+                    @for (img of projectImages(state.projectIndex()); track $index) {
+                      <span [class.active]="$index === projectImageIndex()"></span>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="project__head">
+                <span class="badge">{{ categoryLabel(project.category) }}</span>
+                <span class="project__counter">{{ state.projectIndex() + 1 }} / {{ projects.length }}</span>
+              </div>
+              <h3 class="project__title">{{ project.title }}</h3>
+              <p class="prose">{{ project.description }}</p>
+              <ul class="tech">
+                <li *ngFor="let t of project.technologies">{{ t }}</li>
+              </ul>
+              <div class="row">
+                <a *ngIf="project.demoLink" class="btn btn--primary btn--sm" [href]="project.demoLink" target="_blank" rel="noopener">
+                  <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Live demo
+                </a>
+                <a *ngIf="project.codeLink" class="btn btn--ghost btn--sm" [href]="project.codeLink" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-github" aria-hidden="true"></i> Source code
+                </a>
+              </div>
+            </article>
+          }
+
+          <div class="project-nav">
+            <button type="button" class="pill" (click)="stepProject(-1)" aria-label="Previous project"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i> Prev</button>
+            <button type="button" class="pill" (click)="stepProject(1)" aria-label="Next project">Next <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+          </div>
+
+          <ul class="project-list" aria-label="All projects">
+            @for (entry of filteredProjects(); track entry.index) {
+              <li [class.active]="entry.index === state.projectIndex()">
+                <button type="button" (click)="selectProject(entry.index)">
+                  <img [src]="entry.project.image" alt="" loading="lazy" width="56" height="34" />
+                  <span>
+                    <span class="project-list__title">{{ entry.project.title }}</span>
+                    <span class="project-list__cat">{{ categoryLabel(entry.project.category) }}</span>
+                  </span>
+                </button>
+              </li>
+            }
+          </ul>
+          <div class="row">
+            <button type="button" class="pill" (click)="travel.emit('education')">Next: Education <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────────────────── EDUCATION ───────────────────────── -->
+      @case ('education') {
+        <section class="archive">
+          <p class="hint">The archive discs rotating around the spire hold each qualification.</p>
+          <ol class="archive-list">
+            @for (entry of archiveEntries; track entry.title; let i = $index) {
+              <li [class.active]="i === state.archiveIndex()" [class.degree]="entry.kind === 'degree'">
+                <button type="button" (click)="select.emit({ kind: 'archive', index: i })">
+                  <span class="archive__kind">{{ entry.kind === 'degree' ? 'Degree' : 'Certification' }}</span>
+                  <span class="archive__title">{{ entry.title }}</span>
+                  <span class="archive__meta">{{ entry.subtitle }} · {{ entry.period }}</span>
+                  @if (entry.details.length && i === state.archiveIndex()) {
+                    <span class="archive__details">
+                      <span *ngFor="let d of entry.details">{{ d }}</span>
+                    </span>
+                  }
+                </button>
+              </li>
+            }
+          </ol>
+          <dl class="facts facts--inline">
+            <div *ngFor="let lang of languages"><dt>{{ lang.name }}</dt><dd>{{ lang.level }}</dd></div>
+          </dl>
+          <div class="row">
+            <button type="button" class="pill" (click)="travel.emit('contact')">Next: Contact <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────────────────── CONTACT ───────────────────────── -->
+      @case ('contact') {
+        <section class="contact">
+          <p class="prose">I'm always open to discussing new projects, opportunities, or partnerships. Open a channel and I'll reply as soon as I can.</p>
+          <ul class="channels">
+            <li><i class="fa-solid fa-envelope" aria-hidden="true"></i><span><small>Email</small><a [href]="'mailto:' + profile.email">{{ profile.email }}</a></span></li>
+            <li><i class="fa-solid fa-phone" aria-hidden="true"></i><span><small>Phone</small><a [href]="'tel:' + profile.phone">{{ profile.phone }}</a></span></li>
+            <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span><small>Location</small>{{ profile.location }}</span></li>
+          </ul>
+          <div class="row row--socials">
+            <a *ngFor="let s of socials" class="pill" [href]="s.href" target="_blank" rel="noopener"><i [class]="s.icon" aria-hidden="true"></i> {{ s.label }}</a>
+            <button type="button" class="pill" (click)="downloadCv()"><i class="fa-solid fa-download" aria-hidden="true"></i> CV</button>
+          </div>
+          <h3 class="contact__form-title">Send a transmission</h3>
+          <app-contact-form variant="hud" id="world-contact"></app-contact-form>
+          <div class="row">
+            <button type="button" class="pill" (click)="travel.emit('hub')"><i class="fa-solid fa-house" aria-hidden="true"></i> Return to Halo Station</button>
+          </div>
+        </section>
+      }
+    }
+  </div>
+</aside>

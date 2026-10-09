@@ -1,48 +1,50 @@
-import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ScrollService } from "../../services/scroll.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ScrollService } from '../../services/scroll.service';
+import { PROFILE } from '../../data/portfolio.data';
 
 @Component({
-  selector: "app-hero",
+  selector: 'app-hero',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: "./hero.component.html",
+  templateUrl: './hero.component.html',
 })
-export class HeroComponent implements OnInit {
-  constructor(private scrollService: ScrollService) { }
+export class HeroComponent implements OnInit, OnDestroy {
+  constructor(private scrollService: ScrollService) {}
   displayedTitle = '';
+  profile = PROFILE;
 
   private titleIndex = 0;
   private charIndex = 0;
   private isDeleting = false;
+  private typingTimer: ReturnType<typeof setTimeout> | null = null;
 
-  titles  = [
-    'Full Stack Developer',
-    '.NET Developer',
-    'Software Engineer',
-    'AI Engineer',
-    'NLP Specialist',
-    'Data Scientist',
-    'Machine Learning Engineer',
-];
+  titles = PROFILE.rotatingTitles;
+
   ngOnInit(): void {
     this.startTypingEffect();
   }
 
+  ngOnDestroy(): void {
+    if (this.typingTimer) {
+      clearTimeout(this.typingTimer);
+    }
+  }
+
   scrollToContact(): void {
-    this.scrollService.scrollToSection("contact");
+    this.scrollService.scrollToSection('contact');
   }
 
   downloadCV(): void {
-    const cvUrl = "assets/cv.pdf"// Update with your CV path
-    const link = document.createElement("a");
-    link.href = cvUrl;
-    link.type = "application/pdf";
-    link.download = "cv.pdf"; // Name of the downloaded file
+    const link = document.createElement('a');
+    link.href = PROFILE.cv;
+    link.type = 'application/pdf';
+    link.download = 'cv.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
+
   startTypingEffect() {
     const currentTitle = this.titles[this.titleIndex];
 
@@ -57,7 +59,7 @@ export class HeroComponent implements OnInit {
     let typingSpeed = this.isDeleting ? 50 : 100;
 
     if (!this.isDeleting && this.charIndex === currentTitle.length) {
-      typingSpeed = 2000; // وقت الثبات قبل المسح
+      typingSpeed = 2000;
       this.isDeleting = true;
     } else if (this.isDeleting && this.charIndex === 0) {
       this.isDeleting = false;
@@ -65,6 +67,6 @@ export class HeroComponent implements OnInit {
       typingSpeed = 500;
     }
 
-    setTimeout(() => this.startTypingEffect(), typingSpeed);
+    this.typingTimer = setTimeout(() => this.startTypingEffect(), typingSpeed);
   }
 }

@@ -42,6 +42,11 @@ export class SidebarComponent implements OnInit {
     icon: `<i class="fas fa-folder-open h-6 w-6"></i>`
   },
   {
+    id: 'education',
+    label: 'Education',
+    icon: `<i class="fas fa-graduation-cap h-6 w-6"></i>`
+  },
+  {
     id: 'contact',
     label: 'Contact',
     icon: `<i class="fas fa-envelope h-6 w-6"></i>`
