@@ -5,10 +5,11 @@ interface Project {
   title: string;
   description: string;
   image: string;
+  images?: string[];
   technologies: string[];
   demoLink: string;
   codeLink: string;
-  category: string; // إضافة فئة للمشروع
+  category: string;
 }
 
 @Component({
@@ -31,7 +32,101 @@ export class ProjectsComponent {
     { label: "Data Analysis", value: "data-analysis" },
   ];
 
+  imageIndex: Record<string, number> = {};
+
   projects: Project[] = [
+    {
+      title: "Store Hub — Multi-Store POS",
+      description:
+        "A point-of-sale and store management system for running multiple shops from one dashboard. It covers live sales, product catalogs, inventory, discounts, invoices, cashier performance, and role-based access, with charts for revenue and store activity.",
+      image: "assets/projects/POS1.png",
+      images: [
+        "assets/projects/POS1.png",
+        "assets/projects/POS2.png",
+        "assets/projects/POS3.png",
+        "assets/projects/POS4.png",
+        "assets/projects/POS5.png",
+        "assets/projects/POS6.png",
+      ],
+      technologies: [
+        "ASP.NET Core",
+        "Angular",
+        "SQL Server",
+        "Entity Framework Core",
+        "Role-Based Access",
+      ],
+      demoLink: "http://store-hub.runasp.net/",
+      codeLink: "",
+      category: "fullstack",
+    },
+    {
+      title: "Tameer ERP System",
+      description:
+        "An enterprise platform that brings finance, HR, inventory, purchasing, contracts, legal affairs, operations, archive, and reporting into one workspace. Departments work from shared data, with Arabic and English support and dashboards for day-to-day decisions.",
+      image: "assets/projects/ERP2.png",
+      images: [
+        "assets/projects/ERP2.png",
+        "assets/projects/ERP.png",
+        "assets/projects/ERP1.png",
+      ],
+      technologies: [
+        "ASP.NET Core",
+        "Angular",
+        "SQL Server",
+        "Entity Framework Core",
+        "Arabic / English",
+      ],
+      demoLink: "https://tameer-erp-system.runasp.net/",
+      codeLink: "",
+      category: "fullstack",
+    },
+    {
+      title: "Tameer Biometric Attendance",
+      description:
+        "A fingerprint attendance system for on-site supervisors across project locations. Staff check in from the field, and managers follow live locations, shifts, attendance logs, and user roles, then export records to Excel or PDF.",
+      image: "assets/projects/Attendance1.png",
+      images: [
+        "assets/projects/Attendance1.png",
+        "assets/projects/Attendance2.png",
+        "assets/projects/Attendance3.png",
+        "assets/projects/Attendance4.png",
+        "assets/projects/Attendance5.png",
+      ],
+      technologies: [
+        "ASP.NET Core",
+        "Angular",
+        "SQL Server",
+        "Biometric Attendance",
+        "Excel / PDF Export",
+      ],
+      demoLink: "https://attendance-withdrawal-tameer.runasp.net/",
+      codeLink: "",
+      category: "fullstack",
+    },
+    {
+      title: "Tameer Complaints Portal",
+      description:
+        "A complaints system for residents of major compounds, including Dar Misr, Sakan Misr, and Social Housing. Residents register, submit a complaint, and track its status, so follow-up is faster and resolution time goes down.",
+      image: "assets/projects/complaint.png",
+      images: [
+        "assets/projects/complaint.png",
+        "assets/projects/complaint2.png",
+        "assets/projects/complaint3.png",
+        "assets/projects/complaint4.png",
+        "assets/projects/complaint5.png",
+        "assets/projects/complaint6.png",
+      ],
+      technologies: [
+        "ASP.NET Core",
+        "Angular",
+        "SQL Server",
+        "Entity Framework Core",
+        "Arabic / English",
+      ],
+      demoLink: "https://complaintstameer.runasp.net/",
+      codeLink: "",
+      category: "fullstack",
+    },
     {
       title: "Full Ecommerce Web Application (.NET & Angular)",
       description:
@@ -287,6 +382,38 @@ export class ProjectsComponent {
       category: "ai",
     },
   ];
+
+  getImages(project: Project): string[] {
+    return project.images?.length ? project.images : [project.image];
+  }
+
+  getCurrentImage(project: Project): string {
+    const images = this.getImages(project);
+    const index = this.imageIndex[project.title] ?? 0;
+    return images[index] ?? images[0];
+  }
+
+  showPreviousImage(project: Project, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const images = this.getImages(project);
+    const current = this.imageIndex[project.title] ?? 0;
+    this.imageIndex[project.title] = (current - 1 + images.length) % images.length;
+  }
+
+  getDotClass(project: Project, index: number): string {
+    return (this.imageIndex[project.title] ?? 0) === index
+      ? "bg-white"
+      : "bg-white/40";
+  }
+
+  showNextImage(project: Project, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    const images = this.getImages(project);
+    const current = this.imageIndex[project.title] ?? 0;
+    this.imageIndex[project.title] = (current + 1) % images.length;
+  }
 
   // Get filtered projects based on active filter
   getFilteredProjects(): Project[] {
